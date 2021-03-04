@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Climate Summary</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+ <div class="container my-2">
+ <h1 th:text="#{app.title}">Climate Summary</h1>
+    <table border="1" class="table table-striped table-responsive-md">
+	    <thead>
+                <tr>
+                    <th>Station_Name</th>
+                    <th>Date</th>
+                    <th>Mean_Temp</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+	</table>
+
+</body>
+</html>
