@@ -17,6 +17,11 @@
                 </tr>
             </thead>
             <tbody>
+                  <tr th:each="climate:${summaryList}">
+                    <td th:text="${climate.stationName}"></td>
+                    <td th:text="${#calendars.format(climate.climateDate,'dd-MMM-yyyy')}"></td>
+                    <td th:text="${climate.mean_Temp}"></td>
+                </tr>
             </tbody>
 	</table>
 
