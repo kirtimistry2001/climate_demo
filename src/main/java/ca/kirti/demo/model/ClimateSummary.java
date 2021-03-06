@@ -38,12 +38,17 @@ public class ClimateSummary implements Serializable {
 	@Column(name ="meanTemp",nullable = true)
 	private float meanTemp;
 
-
+	/**
+	 * highest_Monthly_Maxi_Temp	
+	 */
 	@Column(name="hMMTemp", nullable = true)
-	private float highest_Monthly_Maxi_Temp	;
+	private float hMMTemp	;
 
+	/**
+	 * lowest_Monthly_Min_Temp
+	 */
 	@Column(name="lMMTemp",nullable = true)
-	private float lowest_Monthly_Min_Temp;
+	private float lMMTemp;
 
 	public ClimateSummary() {}
 
@@ -54,8 +59,8 @@ public class ClimateSummary implements Serializable {
 		this.province = province;
 		this.climateDate = climateDate;
 		this.meanTemp = mean_Temp;
-		this.highest_Monthly_Maxi_Temp = highest_Monthly_Maxi_Temp;
-		this.lowest_Monthly_Min_Temp = lowest_Monthly_Min_Temp;
+		this.hMMTemp = highest_Monthly_Maxi_Temp;
+		this.lMMTemp = lowest_Monthly_Min_Temp;
 	}
 
 
@@ -91,27 +96,31 @@ public class ClimateSummary implements Serializable {
 		this.meanTemp = mean_Temp;
 	}
 
-	public float getHighest_Monthly_Maxi_Temp() {
-		return highest_Monthly_Maxi_Temp;
+	public float gethMMTemp() {
+		return hMMTemp;
 	}
 
-	public void setHighest_Monthly_Maxi_Temp(float highest_Monthly_Maxi_Temp) {
-		this.highest_Monthly_Maxi_Temp = highest_Monthly_Maxi_Temp;
+	public void sethMMTemp(float hMMTemp) {
+		this.hMMTemp = hMMTemp;
 	}
 
-	public float getLowest_Monthly_Min_Temp() {
-		return lowest_Monthly_Min_Temp;
+	public float getlMMTemp() {
+		return lMMTemp;
 	}
 
-	public void setLowest_Monthly_Min_Temp(float lowest_Monthly_Min_Temp) {
-		this.lowest_Monthly_Min_Temp = lowest_Monthly_Min_Temp;
+	public void setlMMTemp(float lMMTemp) {
+		this.lMMTemp = lMMTemp;
+	}
+
+	public void setMeanTemp(float meanTemp) {
+		this.meanTemp = meanTemp;
 	}
 
 	@Override
 	public String toString() {
 		return "ClimateSummary [stationName=" + stationName + ", province=" + province + ", climateDate=" + climateDate
-				+ ", mean_Temp=" + meanTemp + ", highest_Monthly_Maxi_Temp=" + highest_Monthly_Maxi_Temp
-				+ ", lowest_Monthly_Min_Temp=" + lowest_Monthly_Min_Temp + "]";
+				+ ", mean_Temp=" + meanTemp + ", highest_Monthly_Maxi_Temp=" + hMMTemp
+				+ ", lowest_Monthly_Min_Temp=" + lMMTemp + "]";
 	}
 
 }

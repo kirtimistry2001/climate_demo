@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
 <title>Climate Details</title>
+
+<style>
+	td.thick {
+	  font-weight: bold;
+	}
+</style>
+
 </head>
+
 <body>
-	<h3>Detail information</h3>
+	<div align="center">
+		<h3>Detail information</h3>
+		<br />
+		<table cellpadding="10">
+			<tr>
+				<td class="thick" >Station Name</td>
+				<td th:text="${climateDetail.stationName}"></td>
+			</tr>
+			<tr>
+				<td class="thick">Province</td>
+				<td th:text="${climateDetail.province}"></td>
+			</tr>
+			<tr>
+				<td class="thick">Date</td>
+				<td th:text="${climateDetail.climateDate}"></td>
+			</tr>
+			<tr>
+				<td class="thick">Mean Temperature:</td>
+				<td th:text="${climateDetail.meanTemp}"></td>
+			</tr>
+			<tr>
+				<td class="thick">Highest Monthly Maximum Temperature:</td>
+				<td th:text="${climateDetail.hMMTemp}"></td>
+			</tr>
+			<tr>
+				<td class="thick">Lowest Monthly Minimum Temperature</td>
+				<td th:text="${climateDetail.lMMTemp}"></td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
