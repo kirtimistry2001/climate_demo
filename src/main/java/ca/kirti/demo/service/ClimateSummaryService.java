@@ -20,10 +20,15 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import ca.kirti.demo.model.ClimateSummary;
+import ca.kirti.demo.model.ClimateSummaryIdentity;
 import ca.kirti.demo.repositories.ClimateSummaryRepository;
 @Service
 public class ClimateSummaryService {
@@ -34,14 +39,58 @@ public class ClimateSummaryService {
 	@Autowired
 	ResourceLoader resourceLoader;
 
-	private final  DateFormat formatter = new SimpleDateFormat("mm/dd/yyyy");
+	private final  DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 	private String csvFileName = File.separator+"target"+File.separator+"classes"+File.separator+"eng-climate-summary.csv";
 
 	
-	public List<ClimateSummary> findAllClimateSummaryData() {
+	public List<ClimateSummary> findAll() {
 		return climateRepo.findAll();
 	}
 	
+
+	/**
+	 * Find all recored for given page number and given page size.
+	 * @param pageNum
+	 * @param pageSize
+	 * @param sortField
+	 * @param sortDir
+	 * @return
+	 */
+	public Page<ClimateSummary> findAll(int pageNum, int pageSize, String sortField, String sortDir) {
+		
+		Pageable pageable = PageRequest.of(pageNum - 1, pageSize, 
+				sortDir.equals("asc") ? Sort.by(sortField).ascending()
+									  : Sort.by(sortField).descending()
+		);
+		
+		return climateRepo.findAll(pageable);
+	}
+	/**
+	 * Get the pageable data
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<ClimateSummary> findPaginated(int pageNo, int pageSize, String sortField, String sortDir) {
+		Pageable pageable = PageRequest.of(pageNo-1, pageSize,
+				sortDir.equals("asc") ? Sort.by(sortField).ascending()
+						  : Sort.by(sortField).descending());
+		return this.climateRepo.findAll(pageable);
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * 			is the composite primary key
+	 * @return
+	 */
+	public ClimateSummary findById(ClimateSummaryIdentity id) {
+		return climateRepo.findById(id).get();
+	}
+	
+	/**
+	 * Read data from the CSv file and save in to H2 memory database
+	 */
 	public void saveClimateSummaryData() {
 		
 		FileReader fileReader;

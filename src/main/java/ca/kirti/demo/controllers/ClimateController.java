@@ -1,18 +1,28 @@
 package ca.kirti.demo.controllers;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import ca.kirti.demo.model.ClimateSummary;
+import ca.kirti.demo.model.ClimateSummaryIdentity;
 import ca.kirti.demo.service.ClimateSummaryService;
+import sun.util.logging.resources.logging;
+
 
 
 @Controller
@@ -20,58 +30,65 @@ import ca.kirti.demo.service.ClimateSummaryService;
 @RequestMapping("/")
 public class ClimateController {
 
-
 	@Autowired
 	private ClimateSummaryService csService;
 	
 	@GetMapping("/")
 	public String getClimateSummary(Model model) {
-		List<ClimateSummary> summeryList = csService.findAllClimateSummaryData();
-		model.addAttribute("summaryList", summeryList);
-		return "index";		
+		//default pagination and sorting field with ascending sort direction
+		return findByPagination(model, 1, "stationName", "asc");		
 	}
 
-	
-//	@GetMapping("/page/{pageNo}")
-//	public String findByPagination(@PathVariable (value="pageNo") int pageNo, 
-//			Model model)  {
-//		System.out.println("findByPagination called ");
-//		int pageSize= 5;
-//		Page<ClimateSummary> page = csService.findPaginated(pageNo, pageSize);
-//		List<ClimateSummary> summeryList= page.getContent();
-//		model.addAttribute("currentPag",pageNo);
-//		model.addAttribute("totalPages", page.getTotalPages());
-//		model.addAttribute("totalItems", page.getTotalElements());
-//		model.addAttribute("summaryList", summeryList);
-//		return "index";
-//	}
-	
-//	@GetMapping("/province/{province}/page/{pageNo}")
-//	public List<ClimateSummary> findByProvince(@PathVariable (value="province")  String province, @PathVariable (value="pageNo") int pageNo, 
-//			Model model)  {
-//		System.out.println("findByProvince called ");
-//		int pageSize= 5;
-//		Pageable pageable = PageRequest.of(pageNo-1, pageSize);
-//		Page<ClimateSummary> page = csService.findByProviance(Optional.ofNullable(province).orElse("_"), pageable);
-//		List<ClimateSummary> summeryList= page.getContent();
-//		model.addAttribute("currentPag",pageNo);
-//		model.addAttribute("totalPages", page.getTotalPages());
-//		model.addAttribute("totalItems", page.getTotalElements());
-//		model.addAttribute("summaryList", summeryList);
-//		return summeryList;
-//	}
 
+	/**
+	 * Find  all records 
+	 * @param model
+	 * @param pageNo
+	 * 			get the reocred for given page number
+	 * @param sortField
+	 * 		Column to sort
+	 * @param sortDir
+	 * 		Sort direction "ASC/DESC"
+	 * @return
+	 */
+	@GetMapping("/page/{pageNo}")
+	public String findByPagination(Model model, @PathVariable (value="pageNo") int pageNo, 
+									
+									@Param("sortField") String sortField,
+									@Param("sortDir") String sortDir)  {
+		//TODO for page size
+		int pageSize= 10;
+		Page<ClimateSummary> page = csService.findPaginated(pageNo, pageSize, sortField, sortDir);
+		List<ClimateSummary> summeryList= page.getContent();
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("currentPage",pageNo);
+		model.addAttribute("totalPages", page.getTotalPages());
+		model.addAttribute("totalItems", page.getTotalElements());
+		model.addAttribute("sortField", sortField);
+		model.addAttribute("sortDir", sortDir);
+		model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+		model.addAttribute("summaryList", summeryList);
+
+		return "index";
+	}
 	
-//	@GetMapping("/climate_summary")
-//	public List<ClimateSummary> getClimateSummayByDate(@RequestParam Optional<String> stationName,
-//			@RequestParam Optional<Integer> pageNo,
-//			@RequestParam Optional<String> sortBy) {
-//		int pgno  = pageNo.orElse(0);
-//		pgno = pgno != 0 ?pgno-- :0;
-//		Pageable pageable = PageRequest.of(pgno, 5, Sort.Direction.ASC, sortBy.orElse("stateName"));
-//		Page<ClimateSummary> page =  (Page<ClimateSummary>) csService.findByStateName(stationName.orElse("_"), pageable);
-//		List<ClimateSummary> summeryList= page.getContent();
-//		return summeryList;
-//	}
-	
+	@GetMapping("/detail/{stationName}/{province}/{climateDate}")
+	public ModelAndView showEditProductForm(@PathVariable(name = "stationName") String stationName,
+			@PathVariable(name = "province") String province,
+			@PathVariable(name = "climateDate") String climateDate) {
+		Date date= null;
+		ModelAndView mav = new ModelAndView("detail");
+		System.out.println("stationName: "+stationName + "province: " +province +"date :"+ climateDate);
+		try {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+			date = df.parse(climateDate);
+			System.out.println("date: "+date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		ClimateSummaryIdentity id = new ClimateSummaryIdentity(stationName,province,date);
+		ClimateSummary climateDetail = csService.findById(id);
+		mav.addObject("climateDetail", climateDetail);
+		return mav;
+	}
 }

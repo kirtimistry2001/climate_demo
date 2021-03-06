@@ -4,26 +4,100 @@
 	<meta charset="ISO-8859-1">
 	<title>Climate Summary</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+	<script src="js/custom.js"></script>
+
 </head>
 <body>
  <div class="container my-2">
- <h1 th:text="#{app.title}">Climate Summary</h1>
+ 	<h3 th:text="#{app.title}">Climate Summary</h3>
+	<table>
+		<tr>
+		<!-- number of entries per page -->
+			<td>
+		 		<label for="pageSize">Show</label>
+		 	 	<input id="pagesize" type="number" min="10" max="100" step="10" width="auto"  th:value="${pageSize}" ></input>
+		 	 	<label>entries</label>
+		 	</td>
+		 	<td></td>
+		 	<td align="left" colspan="2">
+		 		<div id="form_div">
+		 	 		<!-- Serach Form -->
+					 <form th:action="@{/}">
+					    Filter: <input type="text" name="keyword" id="keyword" size="20" th:value="${keyword}" required />
+					    &nbsp;
+					    <input type="submit" value="Search" />
+					    &nbsp;
+					    <input type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
+					</form>
+			 	</div>
+		 	</td>
+		 </tr>
+	 </table>
+	 
+	<!-- Records to display -->
+    
     <table border="1" class="table table-striped table-responsive-md">
-	    <thead>
-                <tr>
-                    <th>Station_Name</th>
-                    <th>Date</th>
-                    <th>Mean_Temp</th>
-                </tr>
-            </thead>
-            <tbody>
-                  <tr th:each="climate:${summaryList}">
-                    <td th:text="${climate.stationName}"></td>
-                    <td th:text="${#calendars.format(climate.climateDate,'dd-MMM-yyyy')}"></td>
-                    <td th:text="${climate.mean_Temp}"></td>
-                </tr>
-            </tbody>
+    	<thead>
+    		<tr>
+	        	<th>
+					<a th:href="@{'/page/' + ${currentPage} + '?sortField=stationName&sortDir=' + ${reverseSortDir}}">Station Name</a>
+				</th>
+                <th>
+					<a th:href="@{'/page/' + ${currentPage} + '?sortField=climateDate&sortDir=' + ${reverseSortDir}}">Date</a>
+				</th>
+				<th>
+					<a th:href="@{'/page/' + ${currentPage} + '?sortField=meanTemp&sortDir=' + ${reverseSortDir}}">Mean Temperature</a>
+				</th>
+            </tr>
+        </thead>
+        <tbody>
+        	<tr th:each="climate:${summaryList}">
+            	<td th:text="${climate.stationName}"></td>
+                <td th:text="${#calendars.format(climate.climateDate,'dd-MMM-yyyy')}"></td>
+                <td>
+                  	<!-- Hyperlink to open detail page -->
+                	<a th:href="@{'/detail/' + ${climate.stationName}
+                   						+ '/' + ${climate.province}
+                   						+ '/' +${climate.climateDate}}" 
+                   						th:text="${climate.meanTemp}"></a>
+                </td>
+           </tr>
+		</tbody>
 	</table>
-
+	
+	<!-- display selected sort fiels name with it direction/order -->
+	<div>&nbsp;</div>
+	<div><i>Sorted by [[${sortField}]] in [[${sortDir}]] order</i></div>
+	<div>&nbsp;</div> 
+	
+	<!-- Navigation buttons for pages -->
+	<div th:if="${totalPages > 1}">
+		Total Items: [[${totalItems}]]
+		&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+		
+		<a th:if="${currentPage > 1}" th:href="@{'/page/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">First</a>
+		<span th:unless="${currentPage > 1}">First</span>
+		&nbsp;&nbsp;
+		
+		<a th:if="${currentPage > 1}" th:href="@{'/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Previous</a>
+		<span th:unless="${currentPage > 1}">Previous</span>
+		
+		&nbsp;&nbsp;
+		
+		<span th:each="i: ${#numbers.sequence(1, totalPages)}">
+			<a th:if="${currentPage != i}" th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+			<span th:unless="${currentPage != i}">[[${i}]]</span>
+			&nbsp;
+		</span>
+		
+		<a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+		<span th:unless="${currentPage < totalPages}">Next</span>
+		&nbsp;&nbsp;
+		
+		<a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+		<span th:unless="${currentPage < totalPages}">Last</span>
+	</div>
+ </div>
 </body>
 </html>

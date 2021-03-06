@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+
+
+
+function clearSearch() {
+    window.location = "[[@{/}]]";
+}
