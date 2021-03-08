@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  */
 //TODO use lombok and clear getter/setter
-public class DataFilter {
+public class PageableFilterData {
 
 	@DateTimeFormat(pattern = "MM/dd/yyyy")
     private Date dateTo;
@@ -25,7 +25,7 @@ public class DataFilter {
 	// rows per page
 	private int pageSize =10;
 	
-	//page numner
+	//page number
 	private int pageNo =1;
 	
 	//field to be sorted
@@ -35,11 +35,11 @@ public class DataFilter {
 	private String sortDir="ASC";
 	
 
-	public DataFilter() {	
+	public PageableFilterData() {	
 	}
 	
 	
-	public DataFilter(Date dateFrom, Date dateTo, String keyword,int pageSize, int pageNo, String sortField, String sortDir) {
+	public PageableFilterData(Date dateFrom, Date dateTo, String keyword,int pageSize, int pageNo, String sortField, String sortDir) {
 		super();
 		this.dateTo = dateTo;
 		this.dateFrom = dateFrom;
@@ -123,7 +123,7 @@ public class DataFilter {
 
 	@Override
 	public String toString() {
-		return "FilterData [dateTo=" + dateTo + ", dateFrom=" + dateFrom + ", keyword=" + keyword + ", pageSize="
+		return "FilterData [dateFrom=" + dateFrom + ", dateTo=" + dateTo + ", keyword=" + keyword + ", pageSize="
 				+ pageSize + ", pageNo=" + pageNo + ", sortField=" + sortField + ", sortDir=" + sortDir + "]";
 	}
 

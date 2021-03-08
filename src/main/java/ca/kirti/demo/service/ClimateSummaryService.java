@@ -18,6 +18,8 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,8 @@ import ca.kirti.demo.model.ClimateSummaryIdentity;
 import ca.kirti.demo.repositories.ClimateSummaryRepository;
 @Service
 public class ClimateSummaryService {
+	
+	private static final Logger log = LoggerFactory.getLogger(ClimateSummaryService.class);
 
 	@Autowired 
 	private ClimateSummaryRepository climateRepo;
@@ -81,7 +85,11 @@ public class ClimateSummaryService {
 		Pageable pageable = PageRequest.of(pageNo-1, pageSize,
 				sortDir.equals("asc") ? Sort.by(sortField).ascending()
 						  : Sort.by(sortField).descending());
-		return this.climateRepo.findAll(pageable);
+		if ((fromDate != null  || toDate != null) ) {
+			return this.climateRepo.findByDatesBetween(fromDate, toDate, pageable);
+		} else {
+			return this.climateRepo.findAll(pageable);
+		}
 	}
 	
 	/**
@@ -174,7 +182,7 @@ public class ClimateSummaryService {
 			} catch (UnsupportedEncodingException e)  {
 				e.printStackTrace();
 			}
-			System.out.println("fileType:"+contentType);
+			log.info("fileType:"+contentType);
 			if (contentType != null && (contentType.equals("text/csv")
 					|| contentType.equals("application/vnd.ms-excel")) ) {
 				return true;
@@ -187,4 +195,41 @@ public class ClimateSummaryService {
 		return false;
 	}
 
+	//TODO for more advance search
+//	public Page<ClimateSummary> getFilteredClimateData(PageableFilterData filter) {
+//		log.info("getFilteredClimateData called" +filter.toString());
+//    	Pageable pageable = PageRequest.of(filter.getPageNo()-1, filter.getPageSize(),
+//    			filter.getSortDir().equals("asc") ? Sort.by(filter.getSortField()).ascending()
+//						  : Sort.by(filter.getSortField()).descending());
+//
+////		 Page<ClimateSummary> climateData = this.climateRepo.findAll(pageable);
+//    	CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//    	CriteriaQuery<Item> criteriaQuery = criteriaBuilder.createQuery(Item.class);
+//    	Root<Item> itemRoot = criteriaQuery.from(Item.class);
+//		 Page<ClimateSummary> climateData = climateRepo.findAll((Specification<ClimateSummary>) (root, cq, cb) -> {
+//			Predicate p = cb.conjunction();
+//			log.info("getClimateData Specification called");
+//			if (Objects.nonNull(filter.getDateFrom()) && Objects.nonNull(filter.getDateTo()) && filter.getDateFrom().before(filter.getDateTo())) {
+//				p = cb.and(p, cb.between(root.get("climateDate"), filter.getDateFrom(), filter.getDateTo()));
+//			}
+//			if (!StringUtils.hasLength(filter.getKeyword())) {
+//				p = cb.or(p, cb.like(root.get("stationName"), "%" + filter.getKeyword() + "%"));
+//
+//				//check for valid float or not
+//				try{
+//					float temp = Float.parseFloat(filter.getKeyword());
+//					p = cb.or(p, cb.like(root.get("meanTemp"), "%" + temp + "%"));
+//				}catch(NumberFormatException e){
+//					//not float
+//					log.info("not a valid float");
+//				}
+//			} else {
+//				log.info("no keyword");
+//			}
+//			cq.orderBy(cb.desc(root.get("stationName")), cb.asc(root.get("climeDate")));
+//			return p;
+//		}, pageable);
+//		 return climateData;
+//	}
+	
 }

@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import ca.kirti.demo.model.ClimateSummary;
 import ca.kirti.demo.model.ClimateSummaryIdentity;
-import ca.kirti.demo.model.DataFilter;
+import ca.kirti.demo.model.PageableFilterData;
 import ca.kirti.demo.service.ClimateSummaryService;
 
 
@@ -63,11 +66,11 @@ public class ClimateController {
 		//TODO for page size
 		int pageSize= 10;
 		//date range
-		DataFilter filter  = new DataFilter(new Date(), new Date(), "",
+		PageableFilterData filterData  = new PageableFilterData(null, null, "",
 				pageSize, pageNo,sortField,sortDir);
 
-		log.info("get data for pagination "+filter.toString() );
-		Page<ClimateSummary> page = csService.findPaginated(new Date(),new Date(), "", pageNo, pageSize, sortField, sortDir);
+		log.info("get data for pagination "+filterData.toString() );
+		Page<ClimateSummary> page = csService.findPaginated(null,null, "", pageNo, pageSize, sortField, sortDir);
 		List<ClimateSummary> summeryList= page.getContent();
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("currentPage",pageNo);
@@ -77,7 +80,7 @@ public class ClimateController {
 		model.addAttribute("sortDir", sortDir);
 		model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 		model.addAttribute("summaryList", summeryList);
-		model.addAttribute("dataFilter", filter);
+		model.addAttribute("dataFilter", filterData);
 		return "index";
 	}
 	
@@ -115,23 +118,29 @@ public class ClimateController {
 	 * @return
 	 */
 	@PostMapping()
-    public String FilterClimateData(DataFilter filter, Model model) {
-		log.info("get Filter data for:" +filter.toString());
+    public String FilterClimateData(PageableFilterData filterData, Model model) {
+		log.info("get filterData  for:" +filterData.toString());
 		//TODO for page size
 		int pageSize= 10;
-		filter.setPageSize(pageSize);
-        int pageNo =1;
-		Page<ClimateSummary> page = csService.findPaginated(filter.getDateFrom(), filter.getDateTo(), filter.getKeyword(), pageNo, filter.getPageSize(), filter.getSortField(), filter.getSortDir());
-		List<ClimateSummary> summeryList= page.getContent();
+		filterData.setPageSize(pageSize);
+		//filtered data must be displayed from 1st page.
+        int pageNo = 1;
+        filterData.setPageNo(pageNo);
+    	Pageable pageable = PageRequest.of(pageNo-1, pageSize,
+    			filterData.getSortDir().equals("asc") ? Sort.by(filterData.getSortField()).ascending()
+						  : Sort.by(filterData.getSortField()).descending());
+		Page<ClimateSummary> page = csService.findPaginated(filterData.getDateFrom(), filterData.getDateTo(), "", pageNo, pageSize, filterData.getSortField(), filterData.getSortDir());
+
+    	List<ClimateSummary> summeryList= page.getContent();
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("currentPage",pageNo);
 		model.addAttribute("totalPages", page.getTotalPages());
 		model.addAttribute("totalItems", page.getTotalElements());
-		model.addAttribute("sortField", filter.getSortField());
-		model.addAttribute("sortDir", filter.getSortDir());
-		model.addAttribute("reverseSortDir", filter.getSortDir().equals("asc") ? "desc" : "asc");
+		model.addAttribute("sortField", filterData.getSortField());
+		model.addAttribute("sortDir", filterData.getSortDir());
+		model.addAttribute("reverseSortDir", filterData.getSortDir().equals("asc") ? "desc" : "asc");
 		model.addAttribute("summaryList", summeryList);
-        model.addAttribute("dataFilter", filter);
+        model.addAttribute("dataFilter", filterData);
 	
         return "index";
     }
