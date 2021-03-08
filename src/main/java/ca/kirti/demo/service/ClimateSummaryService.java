@@ -65,13 +65,19 @@ public class ClimateSummaryService {
 		
 		return climateRepo.findAll(pageable);
 	}
+
 	/**
 	 * Get the pageable data
+	 * @param fromDate
+	 * @param toDate
+	 * @param keyword
 	 * @param pageNo
 	 * @param pageSize
+	 * @param sortField
+	 * @param sortDir
 	 * @return
 	 */
-	public Page<ClimateSummary> findPaginated(int pageNo, int pageSize, String sortField, String sortDir) {
+	public Page<ClimateSummary> findPaginated(Date fromDate, Date toDate, String keyword, int pageNo, int pageSize, String sortField, String sortDir) {
 		Pageable pageable = PageRequest.of(pageNo-1, pageSize,
 				sortDir.equals("asc") ? Sort.by(sortField).ascending()
 						  : Sort.by(sortField).descending());
@@ -159,7 +165,6 @@ public class ClimateSummaryService {
 	 */
 	public boolean isValidCSVFile(String fileName) {
 		File file = new File(fileName);
-		System.out.println("File path:"+file.getAbsolutePath());
 		if (file.exists() ) {
 			FileNameMap fileNameMap = URLConnection.getFileNameMap();
 			String contentType = null;

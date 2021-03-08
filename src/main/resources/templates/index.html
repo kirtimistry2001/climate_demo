@@ -3,40 +3,93 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Climate Summary</title>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	crossorigin="anonymous">
 
-<script src="js/custom.js"></script>
+<link th:rel="stylesheet"
+	th:href="@{js/daterangepicker/daterangepicker.css}" />
+<link th:rel="stylesheet"
+	th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} " />
+<link th:rel="stylesheet"
+	th:href="@{webjars/font-awesome/5.11.2/css/all.css} " />
+<link th:rel="stylesheet"
+	th:href="@{css/custom.css}" />
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{js/moment/moment.min.js}"></script>
+<script th:src="@{js/daterangepicker/daterangepicker.js}"></script>
+<script th:src="@{js/custom.js}" type='text/javascript'></script>
+    
+<!--     <script th:src="@{/webjars/jquery/jquery.min.js}"></script> -->
+<!--     <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script> -->
+<!--     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script> -->
+<!--     <script th:src="@{assets/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script> -->
 
 </head>
+
 <body>
 	<div class="container my-2">
-		<h3 th:text="#{app.title}">Climate Summary</h3>
-		<table>
-			<tr>
-				<!-- number of entries per page -->
-				<td><label for="pageSize">Show</label> <input id="pagesize"
-					type="number" min="10" max="100" step="10" width="auto"
-					th:value="${pageSize}"></input> <label>entries</label></td>
-				<td></td>
-				<td align="left" colspan="2">
-					<div id="form_div">
-						<!-- Serach Form -->
-						<form th:action="@{/}">
-							Filter: <input type="text" name="keyword" id="keyword" size="20"
-								th:value="${keyword}" required /> &nbsp; <input type="submit"
-								value="Search" /> &nbsp; <input type="button" value="Clear"
-								id="btnClear" onclick="clearSearch()" />
-						</form>
-					</div>
-				</td>
-			</tr>
-		</table>
+	 <div class="title">
+		<h3 class="title" th:text="#{app.title}">Climate Summary</h3>
+	 </div>
+	 	<!-- Search Form -->
+		<div id="form_div">
+			 <form method="post" th:object="${dataFilter}">
+				<table>
+					<tr>
+						<td>
+						</td>
+						<td> &nbsp;
+<!-- 						<div> -->
+<!-- 							<div class="input-group date"> -->
+<!-- 								<label for="datefrom">Date From:</label>  -->
+<!-- 								<input type="text" -->
+<!-- 									class="form-control" id="datefrom" autocomplete="off" -->
+<!-- 									th:field="${dataFilter.dateFrom}" /> -->
+<!-- 								<div class="input-group-append"> -->
+<!-- 									<span class="input-group-text"><i -->
+<!-- 										class="far fa-calendar-alt"></i></span> -->
+<!-- 								</div> -->
+<!-- 							</div>  -->
+<!-- 							<div class="input-group date"> -->
+<!-- 								<label for="dateTo">Date To:</label>  -->
+<!-- 								<input type="text" -->
+<!-- 									class="form-control" id="dateTo" autocomplete="off" -->
+<!-- 									th:field="${dataFilter.dateTo}" /> -->
+<!-- 								<div class="input-group-append"> -->
+<!-- 									<span class="input-group-text"><i -->
+<!-- 										class="far fa-calendar-alt"></i></span> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div>	 -->
+							<div class="input-group">
+								<label for="dateTo">Date Range:</label>
+								<input type="text" class="form-control" id="dataFilter"
+									autocomplete="off" />
+								<div class="input-group-append">
+									<span class="input-group-text"><i
+										class="far fa-calendar-alt"></i></span>
+								</div>
+							</div>
+							<input type="hidden" name="dateFrom" th:field="${dataFilter.dateFrom}"/>
+            				<input type="hidden" name="dateTo" th:field="${dataFilter.dateTo}"/>
+							 &nbsp;
+						</td>
+						<td align="left" colspan="2">
+							Search Keyword: 
+							<input type="text" name="keyword" id="keyword" size="20"
+							th:value="${dataFilter.keyword}" />
+						</td>
+						<td>&nbsp; 
+							<input type="submit" value="Search" /> &nbsp; 
+							<input type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
+						</td>
 
+					</tr>
+				</table>
+			</form>
+		</div>
 		<!-- Records to display -->
-
+		<div>
 		<table border="1" class="table table-striped table-responsive-md">
 			<thead>
 				<tr>
@@ -66,9 +119,17 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+		<!-- Number of entries per page -->
+		<div>
+		Total Rows: [[${totalItems}]] 
+		</br>
+			<label for="pageSize">Show</label> 
+			<input id="pagesize" type="number"
+				min="10" max="100" step="10" th:value="${pageSize}">&nbsp; rows per page</input> 
 
-		<!-- display selected sort fiels name with it direction/order -->
-		<div>&nbsp;</div>
+		</div>
+		<!-- display selected sort fields name with it direction/order -->
 		<div>
 			<i>Sorted by [[${sortField}]] in [[${sortDir}]] order</i>
 		</div>
@@ -76,8 +137,6 @@
 
 		<!-- Navigation buttons for pages -->
 		<div th:if="${totalPages > 1}">
-			Total Items: [[${totalItems}]] &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-
 			<a th:if="${currentPage > 1}"
 				th:href="@{'/page/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">First</a>
 			<span th:unless="${currentPage > 1}">First</span> &nbsp;&nbsp; <a
@@ -96,5 +155,28 @@
 			<span th:unless="${currentPage < totalPages}">Last</span>
 		</div>
 	</div>
+	
+	<script>
+   var $dataFilter= $('#dataFilter');
+    $dataFilter.daterangepicker({
+    	  showDropdowns: true,
+    	  format: 'MM/DD/YYYY'
+    	});
+    $dataFilter.on('apply.daterangepicker', function (ev, picker) {
+        $('input[name="dateFrom"]').val(picker.startDate.format('MM/DD/YYYY'));
+        $('input[name="dateTo"]').val(picker.endDate.format('MM/DD/YYYY'));
+    });
+
+//     $('.input-group.date').datepicker({
+//         autoclose: true,
+//         todayHighlight: true,
+//         format: "MM/dd/yyyy"
+//     });
+    
+    function clearSearch() {
+        window.location = "[[@{/}]]";
+    }
+
+</script>
 </body>
 </html>
