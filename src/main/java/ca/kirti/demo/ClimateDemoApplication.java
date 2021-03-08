@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ca.kirti.demo.service.ClimateSummaryService;
 
 @SpringBootApplication
-public class ClimateDemoApplication implements CommandLineRunner {
+public class ClimateDemoApplication implements CommandLineRunner{
 
 	@Autowired
 	private ClimateSummaryService csService;

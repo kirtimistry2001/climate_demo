@@ -1,0 +1,11 @@
+@charset "ISO-8859-1";
+td.thick {
+  font-weight: bold;
+}
+h3.title {
+  text-align: center;
+}
+div.title { 
+	background-color: #c3c3c3; 
+	display: block; 
+	}

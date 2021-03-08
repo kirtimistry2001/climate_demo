@@ -4,6 +4,4 @@
 
 
 
-function clearSearch() {
-    window.location = "[[@{/}]]";
-}
+
