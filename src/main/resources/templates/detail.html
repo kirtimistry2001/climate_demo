@@ -3,19 +3,26 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Climate Details</title>
-
-<style>
-	td.thick {
-	  font-weight: bold;
-	}
-</style>
-
+<link th:rel="stylesheet"
+	th:href="@{js/daterangepicker/daterangepicker.css}" />
+<link th:rel="stylesheet"
+	th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} " />
+<link th:rel="stylesheet"
+	th:href="@{webjars/font-awesome/5.11.2/css/all.css} " />
+<link th:rel="stylesheet"
+	th:href="@{css/custom.css}" />
 </head>
 
 <body>
-	<div align="center">
-		<h3>Detail information</h3>
+	<div class="container my-2">
+		 <div class="title">
+			<h3 class ="title">Detail information</h3>
+		 </div>
 		<br />
+		<div th:if="${message != null }">
+			<h3 class="title" th:text="${message}"></h3>
+		</div>
+		<div th:if="${climateDetail != null}">
 		<table cellpadding="10">
 			<tr>
 				<td class="thick" >Station Name</td>
@@ -42,8 +49,13 @@
 				<td th:text="${climateDetail.lMMTemp}"></td>
 			</tr>
 		</table>
-
+		
+		<div class="container">
+			<a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
+		</div>
 </div>
 	</div>
+</div>
+	
 </body>
 </html>

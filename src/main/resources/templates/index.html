@@ -21,168 +21,150 @@
 
 </head>
 
-<body>
+<body >
 	<div class="container my-2">
 	 <div class="title">
 		<h3 class="title" th:text="#{app.title}">Climate Summary</h3>
 	 </div>
+	<!-- Alert message -->
+	 <div id="msgdiv" class="alert alert-info" th:if="*{message!=null and #strings.length(message)>0}">
+	 	<p th:text="${message}" ></p>
+	 </div>
 	 	<!-- Search Form -->
-		<div id="form_div" align="right">
-			 <form method="post" th:object="${dataFilter}">
-				<table>
-					<tr>
-						<td>
-						</td>
-						<td> &nbsp;
-							<div class="input-group">
-								<label for="dateTo">Date Range:</label>&nbsp; 
-								<input type="text" class="form-control" id="dateFilter" value="" 
-									autocomplete="off" />
-								<div class="input-group-append">
-									<span class="input-group-text"><i
-										class="far fa-calendar-alt"></i></span>
-								</div>
-								<input type="submit" value="Search" /> 
-								<input type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
+		<div id="form_div" >
+			 <form id="searchForm" method="post" th:object="${dataFilter}">
+			  <div class="dataFilterHeader">
+			  	<!-- page size -->
+					<div class="page_size">
+						<label for="pageSize">Show</label> 
+						<input id="pageSize"
+							type="number" min="10" max="100" step="10"
+							th:value="${dataFilter.pageSize}" th:field="${dataFilter.pageSize}"
+							onchange="this.form.submit()" />&nbsp; rows per page
+					</div>
+					<!--date_range -->
+					<div class="date_range">
+						<div class="input-group">
+							<label for="dateFilter">Date Range:</label>&nbsp; 
+							<input type="text" class="form-control" id="dateFilter" value="" autocomplete="off" />
+							<div class="input-group-append">
+								<span class="input-group-text"><i
+									class="far fa-calendar-alt"></i></span>
 							</div>
-							<input type="text" name="dateFrom" th:field="${dataFilter.dateFrom}"/>
-            				<input type="text" name="dateTo" th:field="${dataFilter.dateTo}"/>
-					
-
-						</td> <!-- keyword search -->
-<!-- 						<td align="left" colspan="2"> -->
-<!-- 							Search Keyword:  -->
-<!-- 							<input type="text" name="keyword" id="keyword" size="20" -->
-<!-- 							th:value="${dataFilter.keyword}" /> -->
-<!-- 						</td> -->
-						<td>						</td>
-
-					</tr>
-				</table>
+							<!-- buttons -->
+							<input type="submit" value="Search" onclick="filterByDateRange()" /> 
+							<input type="button"
+								value="Clear" id="btnClear" onclick="clearSearch()" />
+						</div>
+						<input type="hidden" name="dateFrom" id="dateFrom"
+							th:field="${dataFilter.dateFrom}" /> 
+						<input type="hidden" name="dateTo" id="dateTo"
+							th:field="${dataFilter.dateTo}" />
+						<input type="hidden"
+							name="pageNo" th:field="${dataFilter.pageNo}" />
+						<input type="hidden" name="sortField" th:field="${dataFilter.sortField}" />
+						<input type="hidden" name="sortDir" th:field="${dataFilter.sortDir}" />
+					</div>
+				</div>
 			</form>
 		</div>
 		<!-- Records to display -->
 		<div>
-		<table border="1" class="table table-striped table-responsive-md">
-			<thead>
-				<tr>
-					<th><a
-						th:href="@{'/page/' + ${currentPage} + '?sortField=stationName&sortDir=' + ${reverseSortDir}}">Station
-							Name</a></th>
-					<th><a
-						th:href="@{'/page/' + ${currentPage} + '?sortField=climateDate&sortDir=' + ${reverseSortDir}}">Date</a>
-					</th>
-					<th><a
-						th:href="@{'/page/' + ${currentPage} + '?sortField=meanTemp&sortDir=' + ${reverseSortDir}}">Mean
-							Temperature</a></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="climate:${summaryList}">
-					<td th:text="${climate.stationName}"></td>
-					<td
-						th:text="${#calendars.format(climate.climateDate,'dd-MMM-yyyy')}"></td>
-					<td>
-						<!-- Hyperlink to open detail page --> <a
-						th:href="@{'/detail/' + ${climate.stationName}
-                   						+ '/' + ${climate.province}
-                   						+ '/' +${climate.climateDate}}"
-                   		th:target="_blank"				
-						th:text="${climate.meanTemp}"></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-		<!-- Number of entries per page -->
-		<div>
-		Total Rows: [[${totalItems}]] 
-		</br>
-			<label for="pageSize">Show</label> 
-			<input id="pagesize" type="number"
-				min="10" max="100" step="10" th:value="${pageSize}">&nbsp; rows per page</input> 
-
+			<table border="1" class="table table-striped table-responsive-md">
+				<thead>
+					<tr>
+						<th><a
+							th:href="'javascript:setSortBy(&quot'+'stationName'+'&quot,&quot'+${reverseSortDir}+'&quot);'">Station Name</a>
+						</th>
+						<th><a
+							th:href="'javascript:setSortBy(&quot'+'climateDate'+'&quot,&quot'+${reverseSortDir}+'&quot);'">Date</a>
+						</th>
+						<th><a
+							th:href="'javascript:setSortBy(&quot'+'meanTemp'+'&quot,&quot'+${reverseSortDir}+'&quot);'">
+							Mean Temperature</a>
+							</th>
+	
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="climate:${summaryList}">
+						<td th:text="${climate.stationName}"></td>
+						<td
+							th:text="${#calendars.format(climate.climateDate,'dd-MMM-yyyy')}"></td>
+						<td>
+							<!-- Hyperlink to open detail page  via ajax call using showClimateDetail--> <a
+							th:href="'javascript:showClimateDetail(&quot'+${climate.stationName}+'&quot,&quot'
+																		+${climate.province}+'&quot,&quot'
+																		+${climate.climateDate}+'&quot);'"
+							th:text="${climate.meanTemp}"></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<!-- display selected sort fields name with it direction/order -->
 		<div>
-			<i>Sorted by [[${sortField}]] in [[${sortDir}]] order</i>
+			<i>Sorted by [[${dataFilter.sortField}]] in [[${dataFilter.sortDir}]] order</i>
 		</div>
 		<div>&nbsp;</div>
 
 		<!-- Navigation buttons for pages -->
 		<div th:if="${totalPages > 1}">
-			<a th:if="${currentPage > 1}"
-				th:href="@{'/page/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">First</a>
-			<span th:unless="${currentPage > 1}">First</span> &nbsp;&nbsp; <a
-				th:if="${currentPage > 1}"
-				th:href="@{'/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Previous</a>
-			<span th:unless="${currentPage > 1}">Previous</span> &nbsp;&nbsp; <span
+			<a th:if="${dataFilter.pageNo > 1}"
+				th:href="'javascript:navigateToPageNo(1);'">First</a>
+			<span th:unless="${dataFilter.pageNo > 1}">First</span> &nbsp;&nbsp; <a
+				th:if="${dataFilter.pageNo > 1}"
+				th:href="'javascript:navigateToPageNo(&quot'+${dataFilter.pageNo - 1}+'&quot);'">Previous</a>
+			<span th:unless="${dataFilter.pageNo > 1}">Previous</span> &nbsp;&nbsp; <span
 				th:each="i: ${#numbers.sequence(1, totalPages)}"> <a
-				th:if="${currentPage != i}"
-				th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
-				<span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp;
-			</span> <a th:if="${currentPage < totalPages}"
-				th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
-			<span th:unless="${currentPage < totalPages}">Next</span>
-			&nbsp;&nbsp; <a th:if="${currentPage < totalPages}"
-				th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
-			<span th:unless="${currentPage < totalPages}">Last</span>
+				th:if="${dataFilter.pageNo != i}"
+				th:href="'javascript:navigateToPageNo(&quot'+${i}+'&quot);'">[[${i}]]</a>
+				<span th:unless="${dataFilter.pageNo != i}">[[${i}]]</span> &nbsp;
+			</span> 
+			<a th:if="${dataFilter.pageNo < totalPages}"
+					th:href="'javascript:navigateToPageNo(&quot'+${dataFilter.pageNo + 1}+'&quot);'">Next</a>
+			<span th:unless="${dataFilter.pageNo < totalPages}">Next</span>	&nbsp;&nbsp; 
+			<a th:if="${dataFilter.pageNo < totalPages}"
+					th:href="'javascript:navigateToPageNo(&quot'+${totalPages}+'&quot);'">Last</a>
+			<span th:unless="${dataFilter.pageNo < totalPages}">Last</span>
 		</div>
 	</div>
 	
 	<script>
-		var startDate = $('input[name="dateFrom"]').val();
-		var endDate = $('input[name="dateFrom"]').val();
-		var $dateFilter = $('#dateFilter');
+	var startDate = $('input[name="dateFrom"]').val();
+	var endDate = $('input[name="dateFrom"]').val();
+	var $dateFilter = $('#dateFilter');
+	$dateFilter.daterangepicker({
+		autoUpdateInput : false,
+		showDropdowns : true,
+		format : 'MM/DD/YYYY',
+	});
+	
+	$dateFilter.on('apply.daterangepicker', function(ev, picker) {
+		console.log("on apply" + picker.startDate.format('MM/DD/YYYY'));
+		$('input[name="dateFrom"]').val(
+				picker.startDate.format('MM/DD/YYYY'));
+		$('input[name="dateTo"]').val(picker.endDate.format('MM/DD/YYYY'));
+		$(this).val(
+				picker.startDate.format('MM/DD/YYYY') + ' - '
+						+ picker.endDate.format('MM/DD/YYYY'));
+	});
+	
+	$dateFilter.on('cancel.daterangepicker', function(ev, picker) {
+		
+	});
+	
 
-		$dateFilter.daterangepicker({
-			autoUpdateInput : false,
-			showDropdowns : true,
-			format : 'MM/DD/YYYY',
-		});
- 
-		$dateFilter.on('apply.daterangepicker', function(ev, picker) {
-			console.log("on apply" + picker.startDate.format('MM/DD/YYYY'));
-			$('input[name="dateFrom"]').val(
-					picker.startDate.format('MM/DD/YYYY'));
-			$('input[name="dateTo"]').val(picker.endDate.format('MM/DD/YYYY'));
-			$(this).val(
-					picker.startDate.format('MM/DD/YYYY') + ' - '
-							+ picker.endDate.format('MM/DD/YYYY'));
-		});
-		
-		$dateFilter.on('cancel.daterangepicker', function(ev, picker) {
-			setDateRange();
-		});
-		
-		//call the setDateRange on load or after search
-		setDateRange() ;
-		
-		//set the date range to the selected dates on page reload after search/filter
-		function setDateRange() {
-			console.log("setDateRange");
-			if (!isEmpty(startDate) && !isEmpty(endDate)) {
-				console.log("setDateRange startDate:" + startDate);
-				var date1 = new Date($('input[name="dateFrom"]').val());
-				var date2 = new Date($('input[name="dateFrom"]').val());
-				$('#dateFilter').data('daterangepicker').setStartDate(date1);
-				$('#dateFilter').data('daterangepicker').setEndDate(date2);
-				$dateFilter.val($('#dateFilter').data('daterangepicker').startDate.format('MM/DD/YYYY') + ' - '
-						+ $('#dateFilter').data('daterangepicker').endDate.format('MM/DD/YYYY'));
-			} else {
-				$(this).val("");
-				console.log(" setDateRangev start date or end date is empty");
-			}
-		}
-		//clear the filter     
-		function clearSearch() {
-			window.location = "[[@{/}]]";
-		}
 
-		function isEmpty(val) {
-			return (val === undefined || val == null || val.length <= 0) ? true
-					: false;
+	//clear the filter     
+	function clearSearch() {
+		var msgdiv = document.getElementById('msgdiv');
+		if (!isEmpty (msgdiv)) {
+			document.getElementById('msgdiv').innerHTML ='';
+			document.getElementById('msgdiv').className ='';
 		}
+		window.location = "[[@{/index}]]";
+	}
 	</script>
 </body>
 </html>

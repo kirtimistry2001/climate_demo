@@ -1,4 +1,5 @@
 @charset "ISO-8859-1";
+
 td.thick {
   font-weight: bold;
 }
@@ -8,4 +9,16 @@ h3.title {
 div.title { 
 	background-color: #c3c3c3; 
 	display: block; 
-	}
+}
+
+.dataFilterHeader {
+  display: inline-block; 
+  width: 100%;
+
+}
+.date_range {
+  float: right;
+}
+.page_size {
+  float: left;
+}	

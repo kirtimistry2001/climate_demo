@@ -31,6 +31,7 @@ import org.springframework.util.ResourceUtils;
 
 import ca.kirti.demo.model.ClimateSummary;
 import ca.kirti.demo.model.ClimateSummaryIdentity;
+import ca.kirti.demo.model.PageableFilterData;
 import ca.kirti.demo.repositories.ClimateSummaryRepository;
 @Service
 public class ClimateSummaryService {
@@ -71,25 +72,29 @@ public class ClimateSummaryService {
 	}
 
 	/**
-	 * Get the pageable data
-	 * @param fromDate
-	 * @param toDate
-	 * @param keyword
-	 * @param pageNo
-	 * @param pageSize
-	 * @param sortField
-	 * @param sortDir
+	 * Get the pageable filtered data
+	 * @param filterData
 	 * @return
 	 */
-	public Page<ClimateSummary> findPaginated(Date fromDate, Date toDate, String keyword, int pageNo, int pageSize, String sortField, String sortDir) {
-		Pageable pageable = PageRequest.of(pageNo-1, pageSize,
-				sortDir.equals("asc") ? Sort.by(sortField).ascending()
-						  : Sort.by(sortField).descending());
-		if ((fromDate != null  || toDate != null) ) {
-			return this.climateRepo.findByDatesBetween(fromDate, toDate, pageable);
+	public Page<ClimateSummary> getPageableFilteredData(PageableFilterData filterData, Pageable pageable ) {
+    	log.debug("filterData.getDateFrom()"+filterData.getDateFrom() +"pazeSize:"+filterData.getPageSize() +"SortField " +filterData.getSortField());
+		if ((filterData.getDateFrom() != null  || filterData.getDateTo() != null) ) {
+			return this.climateRepo.findByDatesBetween(filterData.getDateFrom(),filterData.getDateTo(), pageable);
 		} else {
+			log.debug("filterData find all");
 			return this.climateRepo.findAll(pageable);
 		}
+	}
+
+	/**
+	 * find data in given date range
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<ClimateSummary> findByDatesBetween(Date dateFrom, Date dateTo) {
+    	log.debug("dateTo"+dateTo +"dateFrom " +dateFrom);
+		return this.climateRepo.findByDatesBetween(dateFrom,dateTo);
 	}
 	
 	/**
@@ -98,7 +103,7 @@ public class ClimateSummaryService {
 	 * 			is the composite primary key
 	 * @return
 	 */
-	public ClimateSummary findById(ClimateSummaryIdentity id) {
+	public ClimateSummary findById(ClimateSummaryIdentity id) throws RuntimeException{
 		return climateRepo.findById(id).get();
 	}
 	
@@ -182,7 +187,7 @@ public class ClimateSummaryService {
 			} catch (UnsupportedEncodingException e)  {
 				e.printStackTrace();
 			}
-			log.info("fileType:"+contentType);
+			log.debug("fileType:"+contentType);
 			if (contentType != null && (contentType.equals("text/csv")
 					|| contentType.equals("application/vnd.ms-excel")) ) {
 				return true;
@@ -195,9 +200,11 @@ public class ClimateSummaryService {
 		return false;
 	}
 
-	//TODO for more advance search
+
+
+	//TODO for more keyword and daterange search
 //	public Page<ClimateSummary> getFilteredClimateData(PageableFilterData filter) {
-//		log.info("getFilteredClimateData called" +filter.toString());
+//		log.debug("getFilteredClimateData called" +filter.toString());
 //    	Pageable pageable = PageRequest.of(filter.getPageNo()-1, filter.getPageSize(),
 //    			filter.getSortDir().equals("asc") ? Sort.by(filter.getSortField()).ascending()
 //						  : Sort.by(filter.getSortField()).descending());
