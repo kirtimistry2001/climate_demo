@@ -213,7 +213,7 @@ public class ClimateController {
 		} else {
 			model.addAttribute("totalPages", 0);
 			model.addAttribute("totalItems", 0);
-			message = message + "or No data found for given selection!";
+			message = message + "No data found for given selection!";
 			model.addAttribute("message", message);
 		}
 		model.addAttribute("reverseSortDir", filterData.getSortDir().equals("asc") ? "desc" : "asc");
@@ -227,6 +227,11 @@ public class ClimateController {
 	 @ResponseBody
 	 public List<ClimateSummary> findAll() {
 		return  csService.findAll();
+	 }
+	 
+	 @GetMapping("/exception/throw")
+	 public void getException() throws Exception {
+	     throw new Exception("error");
 	 }
 	 
 
