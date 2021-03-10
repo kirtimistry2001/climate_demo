@@ -1,6 +1,6 @@
 Download the project from https://github.com/kirtimistry2001/climate_demo/tree/master and extract it.
-make sure you have Maven installed. if not then download it from https://maven.apache.org/download.cgi
-set the MAVEN_HOME and Path variable
+make sure you have Java 8 and Maven installed. if not then download it from https://maven.apache.org/download.cgi
+set the JAva_HOME and MAVEN_HOME and Path variable
 
 -------------------------------
 To run from command prompt:
@@ -27,5 +27,4 @@ About the Historic Climate Summary project
 - open the detail page by clcking on the any 'mean Temp' data. on clicking 'Go Back' button in detail page will take back to main page 
   by maintaining the search criteria alogn with pagination and sorting
 - display meaningful error page if user try to access invalid/worng url oe if there is any internal error occurs.
-
-Mockito Test and JUnit test using Junit 5
+- Mockito Test and JUnit test using Junit 5
