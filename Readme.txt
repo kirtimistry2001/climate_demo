@@ -6,21 +6,24 @@ About the Climate Summary project
 - SpringVersion:5.3.4
 
 - Project load and the CSV file (resources/eng-climate-summary.csv) on application start up.
-- Store the the data fromCSV file H2 (inMemeory) database for ease of use and to perform some query on data
+- Store the the data fromCSV file H2 (in-memeory) database for ease of use and to perform some query on data
 - Project follow the MVC arichtecture
 - FrontEnd uses the thymeleaf, HTMl, CSS, jQuery, ajax and some bootstraps
 - it has used daterange picker to find the data between selected date.
 - user can sort the data from the column header, it has pagination with pageSize (number of record per page to view)
 - open the detail page by clcking on the any 'mean Temp' data. on clicking 'Go Back' button in detail page will take back to main page 
   by maintaining the search criteria alogn with pagination and sorting
-
+- display meaningful error page if user try to access invalid/worng url oe if there is any internal error occurs.
 
 Mockito Test and JUnit test using Junit 5
 ---------------------
 To run from command prompt:
 --------------------
-Download the project and extract it.
-Take a build by using command mvn clean build
-Go to build/libs directory, run the jar file by using the command JAVA -JAR
-1) go to project folder (cd  climate_demo)
-2) mvn spring-boot:run
+Download the project from https://github.com/kirtimistry2001/climate_demo/tree/master and extract it.
+make sure you have Maven installed. if not then download it from https://maven.apache.org/download.cgi
+set the MAVEN_HOME and Path variable
+
+1) open the command prompt/Terminal and go to the extracted project Directory/Folder
+2) check if Maven installed or not by using mvn -version command
+3) Build the project by using command mvn clean install
+4) mvn spring-boot:run
