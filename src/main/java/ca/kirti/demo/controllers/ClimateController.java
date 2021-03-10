@@ -222,4 +222,12 @@ public class ClimateController {
 		model.addAttribute("dataFilter", filterData);
 		return "index";
 	}
+	
+	 @RequestMapping(value = "/getAllSummary", method = RequestMethod.GET)
+	 @ResponseBody
+	 public List<ClimateSummary> findAll() {
+		return  csService.findAll();
+	 }
+	 
+
 }

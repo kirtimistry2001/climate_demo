@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -94,7 +95,14 @@ public class ClimateSummaryService {
 	 */
 	public List<ClimateSummary> findByDatesBetween(Date dateFrom, Date dateTo) {
     	log.debug("dateTo"+dateTo +"dateFrom " +dateFrom);
-		return this.climateRepo.findByDatesBetween(dateFrom,dateTo);
+		try {
+			List<ClimateSummary> list = this.climateRepo.findByDatesBetween(dateFrom, dateTo);
+			return list;
+		} catch (Exception e) {
+			log.error("Error while finding data for given data range");
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 	
 	/**
@@ -125,12 +133,12 @@ public class ClimateSummaryService {
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
-		
+		CSVParser csvParser = null;
 		try {
 			fileReader = new FileReader(csvFileName);
 
 			BufferedReader bufferReader = new BufferedReader(fileReader);
-			CSVParser csvParser = new CSVParser(bufferReader,
+			csvParser = new CSVParser(bufferReader,
 					CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
 
 			//Get the content present in the CSV File 
@@ -165,7 +173,14 @@ public class ClimateSummaryService {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} finally {
-
+			//close the parser
+			if(csvParser != null && !csvParser.isClosed()) {
+				try {
+					csvParser.close();
+				} catch (IOException e) {
+					log.error("Error while closing the parser");
+				}
+			}
 		}
 
 	}

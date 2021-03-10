@@ -14,6 +14,8 @@ About the Climate Summary project
 - open the detail page by clcking on the any 'mean Temp' data. on clicking 'Go Back' button in detail page will take back to main page 
   by maintaining the search criteria alogn with pagination and sorting
 
+
+Mockito Test and JUnit test using Junit 5
 ---------------------
 To run from command prompt:
 --------------------
