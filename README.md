@@ -35,5 +35,5 @@ About the Historic Climate Summary project
 - open the detail page by clcking on the any 'mean Temp' data. on clicking 'Go Back' button in detail page will take back to main page 
   by maintaining the search criteria alogn with pagination and sorting
 - display meaningful error page if user try to access invalid/worng url oe if there is any internal error occurs.
-- Tst cases created using Mockito Test and JUnit test
+- Test cases created using Mockito Test and JUnit test
 
