@@ -12,9 +12,10 @@ To run from command prompt:
 
 1) open the command prompt/Terminal and go to the extracted project Directory/Folder
 2) check if Maven installed or not by using mvn -version command
-3) Build the project by using command mvn clean install
+3) Build the project by using command: mvn clean install
 4) type:  mvn spring-boot:run
 5) To test the test cases: mvn test
+6) 6) browse the application using url: http://localhost:8080/
 
 ----------------------------------------
 About the Historic Climate Summary project  
@@ -32,5 +33,5 @@ About the Historic Climate Summary project
   by maintaining the search criteria alogn with pagination and sorting
 - display meaningful error page if user try to access invalid/worng url oe if there is any internal error occurs.
 
-Mockito Test and JUnit test using Junit 5
+Mockito Test and JUnit test using Junit
 
