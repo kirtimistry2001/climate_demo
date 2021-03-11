@@ -1,7 +1,27 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h3>Resource you are trying doesn't exists. Please try with valid url. </h3>
-<a href="/">Go Home</a>
-</body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>404 Page not found</title>
+		<link th:rel="stylesheet"
+			th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} " />
+		<link th:rel="stylesheet"
+			th:href="@{webjars/font-awesome/5.11.2/css/all.css} " />
+		<link th:rel="stylesheet"
+			th:href="@{css/custom.css}" />
+	</head>
+	<body>
+		<div class="container my-2">
+			<div class="title">
+				<h3 class="title" th:text="#{app.title}">Climate Summary</h3>
+		 	</div>
+			<div class="center" >
+				<h1>Sorry!</h1><h2> We couldn't find that page</h2>
+				<h3>Resource you are trying to access, it doesn't exists. </h3>
+				<h4>Please try with valid address/url. </h4>
+				<h5>404</h5>
+				<p>Page not found</p>
+				<a href="/">Home</a>
+			</div>
+		</div>
+	</body>
 </html>

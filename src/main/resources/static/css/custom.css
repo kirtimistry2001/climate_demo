@@ -2,15 +2,24 @@
 
 td.thick {
   font-weight: bold;
+   padding: 05px 20px 05px 10px;
 }
 h3.title {
   text-align: center;
 }
 div.title { 
+	text-align: center;
 	background-color: #c3c3c3; 
 	display: block; 
 }
 
+div.center {
+  text-align: center;
+  margin: auto;
+  width: 100%;
+  padding: 10px; 
+  margin: 20px;
+}
 .dataFilterHeader {
   display: inline-block; 
   width: 100%;
