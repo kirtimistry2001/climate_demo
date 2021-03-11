@@ -12,9 +12,12 @@ To run from command prompt:
 
 1) open the command prompt/Terminal and go to the extracted project Directory/Folder
 2) check if Maven installed or not by using mvn -version command
-3) Build the project by using command: mvn clean install
-4) type:  mvn spring-boot:run
-5) To test the test cases: mvn test
+3) Build the project by using command: 
+    mvn clean install
+4) To run the application:  
+    mvn spring-boot:run
+5) To test the test cases: 
+    mvn test
 6) 6) browse the application using url: http://localhost:8080/
 
 ----------------------------------------
