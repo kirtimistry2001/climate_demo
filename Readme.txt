@@ -12,6 +12,8 @@ To run from command prompt:
 4) type:  mvn spring-boot:run
 5) To test the test cases: mvn test
 
+Note: One can launch Application on browser by: http://localhost:8080
+	  the default port is 8080. Port number can be changed from application.properties file 
 ----------------------------------------
 About the Historic Climate Summary project  
 ------------------------------------------
